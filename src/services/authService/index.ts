@@ -1,3 +1,4 @@
+import { create } from "domain"
 import { User } from "../../models/User/index.js"
 import jwtSign from "../../utilities/jwtSign.js"
 import { Request, Response, NextFunction } from "express"
@@ -47,9 +48,9 @@ export const registerService = async (
   next: NextFunction
 ) => {
   try {
-    const { name, username, email, password } = req.body
+    const { name, profilePicUrl, email, password } = req.body
 
-    const existingUser = await User.findOne({ username, email }).exec()
+    const existingUser = await User.findOne({ email }).exec()
 
     if (existingUser) {
       return res.status(400).json({ message: "User already exists" })
@@ -58,13 +59,22 @@ export const registerService = async (
     // Create a new user
     await User.create({
       name,
-      username,
       email,
       password,
+      profilePicUrl,
     })
 
     const token = jwtSign({ email, password })
-    return res.json({ message: "User registered successfully", token })
+    let user = null
+    if (token) {
+      user = await User.findOne({ email }).select("-password").exec()
+      user = user?.toObject()
+    }
+    return res.json({
+      message: "User registered successfully",
+      user,
+      token,
+    })
   } catch (error: any) {
     next(error)
     return res
