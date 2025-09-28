@@ -5,6 +5,7 @@ import express from "express"
 import { Server } from "socket.io"
 import { connectDB } from "./DB/index.js"
 import authRoute from "./routes/authRoute/index.js"
+import cookieParser from "cookie-parser"
 
 dotenv.config()
 
@@ -13,7 +14,8 @@ const server = http.createServer(app)
 const io = new Server(server)
 
 app.use(express.json())
-app.use(cors())
+app.use(cookieParser())
+app.use(cors({ origin: "http://localhost:8080", credentials: true })) // Change this for production
 
 // Connect to Database
 connectDB()

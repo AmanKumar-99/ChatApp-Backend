@@ -1,4 +1,3 @@
-import { create } from "domain"
 import { User } from "../../models/User/index.js"
 import jwtSign from "../../utilities/jwtSign.js"
 import { Request, Response, NextFunction } from "express"
@@ -18,7 +17,7 @@ export const signInService = async (
         .json({ message: "Email and password are required" })
     }
     // Check if user exists
-    const user = await User.findOne({ email })
+    const user = await User.findOne({ email }).exec()
 
     if (!user) {
       return res.status(404).json({ message: "User not found" })
@@ -32,7 +31,23 @@ export const signInService = async (
 
     // Generate JWT token
     const token = jwtSign({ email, password })
-    return res.json({ message: "Signed in successfully", token })
+    const userData = user.toObject()
+    const { password: _, ...userWithoutPassword } = userData
+
+    if (token) {
+      res.cookie("token", token, {
+        httpOnly: true,
+        secure: false, // Set to true if using HTTPS (production)
+        sameSite: "strict",
+      })
+    } else {
+      throw new Error("Token generation failed")
+    }
+
+    return res.json({
+      message: "Signed in successfully",
+      user: userWithoutPassword,
+    })
   } catch (error: any) {
     next(error)
     return res
@@ -69,11 +84,16 @@ export const registerService = async (
     if (token) {
       user = await User.findOne({ email }).select("-password").exec()
       user = user?.toObject()
+
+      res.cookie("token", token, {
+        httpOnly: true,
+        secure: false, // Set to true if using HTTPS (production)
+        sameSite: "strict",
+      })
     }
     return res.json({
       message: "User registered successfully",
       user,
-      token,
     })
   } catch (error: any) {
     next(error)
