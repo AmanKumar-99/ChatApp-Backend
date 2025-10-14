@@ -10,4 +10,4 @@ if (!jwtSecret) {
 }
 
 export default (payload: string | object | Buffer) =>
-  jwt.sign(payload, jwtSecret, { expiresIn: "2m" })
+  jwt.sign(payload, jwtSecret, { expiresIn: "10m" })

@@ -25,7 +25,7 @@ const verifyAuth = (req: Request, res: Response, next: NextFunction) => {
       .json({ message: "JWT_SECRET environment variable is not defined" })
   }
 
-  return jwt.verify(
+  jwt.verify(
     token,
     jwtSecret,
     (

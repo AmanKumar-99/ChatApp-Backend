@@ -5,6 +5,7 @@ import express from "express"
 import { connectDB } from "./config/db.js"
 import authRoute from "./routes/authRoute/index.js"
 import chatRoute from "./routes/chatRoute/index.js"
+import userRoute from "./routes/userRoute/index.js"
 import cookieParser from "cookie-parser"
 import initSocket from "./config/socketio.js"
 
@@ -25,6 +26,7 @@ initSocket(server)
 
 // Other routes and middleware can be added here
 app.use("/api/auth", authRoute)
+app.use("/api/users", userRoute)
 app.use("/api/chat", chatRoute)
 
 const PORT = process.env.PORT || 3000
