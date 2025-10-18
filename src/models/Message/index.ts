@@ -32,7 +32,7 @@ const MessageSchema = new Schema<IMessage>(
       default: "sent",
     },
   },
-  { timestamps: true }
+  { timestamps: true, versionKey: false }
 )
 
 MessageSchema.index({ chatId: 1, createdAt: -1 }) // retrieve messages in chat

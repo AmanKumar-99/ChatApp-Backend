@@ -25,9 +25,8 @@ const verifyAuth = (req: Request, res: Response, next: NextFunction) => {
       .json({ message: "JWT_SECRET environment variable is not defined" })
   }
 
-  jwt.verify(
+  verifyAuthToken(
     token,
-    jwtSecret,
     (
       err: jwt.VerifyErrors | null,
       payload: string | JwtPayload | undefined
@@ -42,6 +41,16 @@ const verifyAuth = (req: Request, res: Response, next: NextFunction) => {
       }
     }
   )
+}
+
+export const verifyAuthToken = (token: string, callback: any = null) => {
+  const jwtSecret = process.env.JWT_SECRET
+
+  if (!jwtSecret) {
+    return new Error("Secret Key Not Defined...")
+  }
+
+  return jwt.verify(token, jwtSecret, callback)
 }
 
 export default verifyAuth
