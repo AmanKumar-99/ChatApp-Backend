@@ -17,8 +17,30 @@ export function registerSocketEvents(io: Server) {
     // User joins after authentication
     socket.on("user:join", async (userId: string) => {
       socket.data.userId = userId
-      await setUserOnline(userId, socket.id)
-      console.log(`User ${userId} is online`)
+
+      let chatIds: string[] = []
+      try {
+        chatIds = await redis.smembers(`user:${userId}:chats`)
+      } catch (e) {
+        // fallback: query DB - Chat.find({ members: userId }).select('_id')
+        const chats = await Chat.find({ members: userId })
+          .select("_id")
+          .lean()
+        chatIds = chats.map((c) => c._id.toString())
+        // populate Redis for next time
+        for (const cid of chatIds)
+          await redis.sadd(`user:${userId}:chats`, cid)
+      }
+
+      // join the socket to each room so it receives broadcasts
+      for (const cid of chatIds) {
+        socket.join(`chat:${cid}`)
+      }
+
+      // Optionally emit success / chat list
+      socket.emit("user:joined", { userId, chatIds })
+
+      await setUserOnline(userId, socket.id, io)
     })
 
     // Join chat room
@@ -113,7 +135,7 @@ export function registerSocketEvents(io: Server) {
     })
 
     // Disconnect
-    socket.on("disconnect", async () => {
+    socket.on("disconnected", async () => {
       const userId = socket.data.userId
       if (userId) {
         await setUserOffline(userId, socket.id)

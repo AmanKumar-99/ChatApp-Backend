@@ -1,8 +1,29 @@
+import type { Server } from "socket.io"
 import { redis } from "../config/redisClient.js"
 import { User } from "../models/User/index.js"
 
 // Mark a user as online: store socket id in Redis set and update persistent status
-export async function setUserOnline(userId: string, socketId: string) {
+export async function setUserOnline(
+  userId: string,
+  socketId: string,
+  io: Server
+) {
+  // 1️⃣ Get all existing sockets for this user
+  const existingSockets = await redis.smembers(`sockets:${userId}`)
+
+  // 2️⃣ Validate existing sockets
+  for (const existingSocketId of existingSockets) {
+    const existingSocket = io.sockets.sockets.get(existingSocketId)
+
+    // If the socket no longer exists (user refreshed or tab closed)
+    if (!existingSocket) {
+      await redis.srem(`sockets:${userId}`, existingSocketId)
+      console.log(
+        `🧹 Removed stale socket ${existingSocketId} for user ${userId}`
+      )
+    }
+  }
+
   await redis.set(`user:${userId}:status`, "online")
   await redis.sadd(`sockets:${userId}`, socketId)
 
@@ -16,11 +37,15 @@ export async function setUserOffline(userId: string, socketId: string) {
 
   if (socketsLeft === 0) {
     await redis.set(`user:${userId}:status`, "offline")
-    await redis.set(`user:${userId}:lastSeen`, new Date().toISOString())
+    await redis.set(`user:${userId}:lastSeen`, new Date().toISOString()) // Not implemented from frontend yet
 
     await User.findByIdAndUpdate(userId, {
       status: "offline",
       lastSeen: new Date(),
     })
+  } else {
+    console.log(
+      `User ${userId} still has ${socketsLeft} active socket(s).`
+    )
   }
 }
