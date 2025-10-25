@@ -4,10 +4,10 @@ import { getUserByIdController, getUserDataController } from "../../controller/u
 
 const router = express.Router()
 
-// POST /direct - Direct chat message
+// GET / - Get All Users
 router.get("/", verifyAuth, getUserDataController)
 
-// POST /group - Group chat message
-router.post("/:userId", verifyAuth, getUserByIdController)
+// GET /:userId - Get User by Id
+router.get("/:userId", verifyAuth, getUserByIdController)
 
 export default router

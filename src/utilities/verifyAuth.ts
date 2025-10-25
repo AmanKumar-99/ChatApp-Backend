@@ -11,18 +11,18 @@ declare module "express-serve-static-core" {
 const verifyAuth = (req: Request, res: Response, next: NextFunction) => {
   const authHeader = req.headers.authorization
   const token =
-    (authHeader && authHeader.split(" ")[1]) || req.cookies.token
+    (authHeader && authHeader.split(" ")[1]) || req.cookies.refreshToken
 
   if (!token) {
     return res.status(401).json({ message: "No token provided" })
   }
 
-  const jwtSecret = process.env.JWT_SECRET
+  const jwtSecret = process.env.JWT_REFRESH_SECRET
 
   if (!jwtSecret) {
-    return res
-      .status(500)
-      .json({ message: "JWT_SECRET environment variable is not defined" })
+    return res.status(500).json({
+      message: "JWT_REFRESH_SECRET environment variable is not defined",
+    })
   }
 
   verifyAuthToken(
@@ -43,14 +43,27 @@ const verifyAuth = (req: Request, res: Response, next: NextFunction) => {
   )
 }
 
-export const verifyAuthToken = (token: string, callback: any = null) => {
-  const jwtSecret = process.env.JWT_SECRET
+export const verifyAuthToken = (
+  token: string,
+  callback: any = null,
+  isRefreshKey = true
+) => {
+  const jwtAccessSecret = process.env.JWT_ACCESS_SECRET
+  let jwtRefreshSecret = process.env.JWT_REFRESH_SECRET
 
-  if (!jwtSecret) {
+  if (!jwtRefreshSecret) {
+    return new Error("Secret Key for refresh token Not Defined...")
+  }
+
+  if (!jwtAccessSecret) {
     return new Error("Secret Key Not Defined...")
   }
 
-  return jwt.verify(token, jwtSecret, callback)
+  return jwt.verify(
+    token,
+    isRefreshKey ? jwtRefreshSecret : jwtAccessSecret,
+    callback
+  )
 }
 
 export default verifyAuth

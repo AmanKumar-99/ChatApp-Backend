@@ -15,18 +15,16 @@ export default async function initSocket(server: http.Server) {
       const cookies = socket.handshake.headers.cookie
         ? cookie.parse(socket.handshake.headers.cookie)
         : {}
-      const token = cookies.token || socket.handshake.auth?.token
+      const token = cookies.refreshToken || socket.handshake.auth?.refreshToken
       if (!token) return next(new Error("Authentication error"))
 
       const user = verifyAuthToken(token)
 
       if (!user) {
-        console.log(user)
         return next(Error("Unauthorized"))
       }
-
-    } catch (e:any) {
-      return next(new Error("unauthorized"))
+    } catch (e: any) {
+      return next(new Error("unauthorized" + e.message.toString()))
     }
 
     next()

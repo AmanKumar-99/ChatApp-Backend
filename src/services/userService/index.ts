@@ -46,7 +46,7 @@ export const getUserById = async (
   res: Response,
   next: NextFunction
 ) => {
-  const userId = req.params.id
+  const userId = req.params.userId
   return await User.findById(userId)
     .select("-password") // Exclude password field
     .then((user) => {
