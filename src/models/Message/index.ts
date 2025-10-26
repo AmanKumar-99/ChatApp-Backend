@@ -5,6 +5,10 @@ export interface IMessage extends Document {
   senderId: Schema.Types.ObjectId
   content?: string
   mediaUrl?: string
+  publicId?: string
+  resourceType?: string
+  bytes?: number
+  originalFilename?: string
   messageType: "text" | "image" | "file" | "video" | "audio"
   status: "sent" | "delivered" | "read"
   createdAt: Date
@@ -21,6 +25,10 @@ const MessageSchema = new Schema<IMessage>(
     senderId: { type: Schema.Types.ObjectId, ref: "User", required: true },
     content: { type: String },
     mediaUrl: { type: String },
+    publicId: { type: String },
+    resourceType: { type: String },
+    originalFilename: { type: String },
+    bytes: { type: Number },
     messageType: {
       type: String,
       enum: ["text", "image", "file", "video", "audio"],
