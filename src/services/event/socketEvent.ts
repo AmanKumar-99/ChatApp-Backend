@@ -1,14 +1,15 @@
 import { Server, Socket } from "socket.io"
 import { setUserOffline, setUserOnline } from "../../cache/presence.js"
 import { redis } from "../../config/redisClient.js"
-import { incrementUnread, resetUnread } from "../../cache/unread.js"
+import { resetUnread } from "../../cache/unread.js"
 import { Chat } from "../../models/Chat/index.js"
-import { cacheMessage } from "../../cache/messages.js"
 import { Message } from "../../models/Message/index.js"
 import {
   addMembersToGroup,
   removeMembersFromGroup,
 } from "../chatService/index.js"
+import { handleChatMessage } from "./handler/chatMessage.js"
+import { handleDownloadRequest } from "./handler/download.js"
 
 export function registerSocketEvents(io: Server) {
   io.on("connection", (socket: Socket) => {
@@ -54,35 +55,14 @@ export function registerSocketEvents(io: Server) {
     })
 
     // Send message
-    socket.on(
-      "chat:message",
-      async ({ chatId, senderId, content, messageType }) => {
-        const message = new Message({
-          chatId,
-          senderId,
-          content,
-          messageType: messageType || "text",
-          status: "sent",
-        })
-        await message.save()
+    socket.on("chat:message", async (payload) => {
+      await handleChatMessage(io, socket, payload)
+    })
 
-        // Cache message in Redis for fast reads
-        await cacheMessage(chatId, message.toObject())
-
-        // Broadcast
-        io.to(`chat:${chatId}`).emit("chat:message", message)
-
-        // Update unread for all others
-        const chat = await Chat.findById(chatId)
-        if (chat) {
-          for (const memberId of chat.members) {
-            if (memberId.toString() !== senderId) {
-              await incrementUnread(chatId, memberId.toString())
-            }
-          }
-        }
-      }
-    )
+    // Request to download a file linked to a message
+    socket.on("chat:download", async (payload: { messageId: string }) => {
+      await handleDownloadRequest(io, socket, payload)
+    })
 
     // Add members to group (triggered by group admin)
     socket.on("group:addMembers", async ({ chatId, newMemberIds }) => {
