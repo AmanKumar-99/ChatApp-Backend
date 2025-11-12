@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "build": "tsc -p tsconfig.server.json",
-    "start": "node dist/server.js",
+    "start": "node dist/app.js",
     "lint": "eslint \"src/**/*.{ts,js}\" --max-warnings=0",
     "lint:fix": "eslint \"src/**/*.{ts,js}\" --fix",
     "typecheck": "tsc --noEmit -p tsconfig.server.json",
