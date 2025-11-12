@@ -1,0 +1,36 @@
+# render.yaml - Render Infra-as-Code for a Node.js web service (socket.io backend)
+# Place this at the repo root. Replace placeholders with your values.
+
+services:
+  - type: web
+    name: chat-backend-service             # <<-- change: friendly name for your service
+    env: node                              # render will build using Node
+    plan: free                             # or "starter" / "standard" etc. Use free for hobby
+    region: oregon                         
+    repo: https://github.com/AmanKumar-99/chatlink-backend.git
+    branch: develop                           # branch to deploy from
+    buildCommand: "npm ci && npm run build"
+    startCommand: "npm run start"         # should run node dist/server.js or equivalent
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: MONGODB_URI
+        fromSecret: MONGODB_URI
+      - key: REDIS_URL
+        fromSecret: REDIS_URL
+      - key: CLOUDINARY_CLOUD_NAME
+        fromSecret: CLOUDINARY_CLOUD_NAME
+      - key: CLOUDINARY_API_KEY
+        fromSecret: CLOUDINARY_API_KEY
+      - key: CLOUDINARY_API_SECRET
+        fromSecret: CLOUDINARY_API_SECRET
+      - key: JWT_SECRET
+        fromSecret: JWT_SECRET
+    autoDeploy: true                       # deploy automatically on push
+
+# Optional secrets block — you can create secrets via Render dashboard instead of committing values.
+# If you prefer to declare them here, you can add them (but DO NOT put plaintext secrets in git).
+# Example (do NOT commit actual secret values):
+# secrets:
+#   - name: MONGODB_URI
+#     value: "mongodb+srv://username:password@cluster0..."  # NOT RECOMMENDED to store plaintext in repo

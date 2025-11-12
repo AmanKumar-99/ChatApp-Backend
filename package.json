@@ -5,6 +5,10 @@
   "main": "src/app.ts",
   "type": "module",
   "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "lint": "eslint \"src/**/*.{ts,js}\" --max-warnings=0",
+    "lint:fix": "eslint \"src/**/*.{ts,js}\" --fix",
+    "typecheck": "tsc --noEmit -p tsconfig.server.json",
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon --watch src --ext ts --exec \"node --loader ts-node/esm\" src/app.ts"
   },
@@ -25,6 +29,7 @@
     "streamifier": "^0.1.1"
   },
   "devDependencies": {
+    "@eslint/js": "^9.39.1",
     "@types/bcrypt": "^6.0.0",
     "@types/cookie": "^0.6.0",
     "@types/cookie-parser": "^1.4.9",
@@ -34,9 +39,17 @@
     "@types/mongoose": "^5.11.96",
     "@types/node": "^24.3.1",
     "@types/streamifier": "^0.1.2",
+    "@typescript-eslint/eslint-plugin": "^8.46.4",
+    "@typescript-eslint/parser": "^8.46.4",
     "dotenv": "^17.2.2",
+    "eslint": "^9.39.1",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-import": "^2.32.0",
+    "eslint-plugin-prettier": "^5.5.4",
+    "globals": "^16.5.0",
     "nodemon": "^3.1.10",
+    "prettier": "^3.6.2",
     "ts-node": "^10.9.2",
-    "typescript": "^5.9.2"
+    "typescript": "^5.9.3"
   }
 }
