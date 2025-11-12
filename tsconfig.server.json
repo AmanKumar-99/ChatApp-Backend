@@ -1,0 +1,31 @@
+{
+  "compilerOptions": {
+    /* === Output Settings === */
+    "outDir": "dist",
+    "rootDir": "src",
+
+    /* === Module System === */
+    "module": "commonjs",
+    "moduleResolution": "node", // critical for ESM
+    "target": "ES2022",
+
+    /* === Node ESM Compatibility === */
+    "allowImportingTsExtensions": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "sourceMap": true,
+    "strict": false,
+
+    /* === Interop & Paths === */
+    "isolatedModules": true,
+    "noEmitOnError": false,
+
+    /* === Optional === */
+    "declaration": false
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"]
+}
