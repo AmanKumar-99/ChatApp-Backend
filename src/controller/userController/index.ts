@@ -9,7 +9,7 @@ export const getUserDataController = async (
   res: Response,
   next: NextFunction
 ) => {
-  return getAllUsersData(req, res, next).catch((err) => next(err))
+  return getAllUsersData(req, res).catch((err) => next(err))
 }
 
 export const getUserByIdController = async (

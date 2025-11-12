@@ -1,4 +1,4 @@
-import { redis } from "../config/redisClient"
+import { redis } from "../config/redisClient.js"
 
 /**
  * Store usersData in Redis cache (FIFO list of last 20 usersData)

@@ -49,7 +49,7 @@ export const verifyAuthToken = (
   isRefreshKey = true
 ) => {
   const jwtAccessSecret = process.env.JWT_ACCESS_SECRET
-  let jwtRefreshSecret = process.env.JWT_REFRESH_SECRET
+  const jwtRefreshSecret = process.env.JWT_REFRESH_SECRET
 
   if (!jwtRefreshSecret) {
     return new Error("Secret Key for refresh token Not Defined...")

@@ -4,7 +4,6 @@ import { User } from "../../models/User/index.js"
 export const getAllUsersData = async (
   req: Request,
   res: Response,
-  next: NextFunction
 ) => {
   const page = parseInt(req.query.page as string) || 1
   const limit = parseInt(req.query.limit as string) || 5
@@ -24,9 +23,7 @@ export const getAllUsersData = async (
     ]
   }
 
-  let users
-
-  users = await User.find(query)
+  const users = await User.find(query)
     .skip((page - 1) * limit)
     .limit(limit)
     .select("-password") // Exclude password field

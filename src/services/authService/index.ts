@@ -43,7 +43,7 @@ export const signInService = async (
 
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
-      secure: false, // Set to true if using HTTPS (production)
+      secure: true, // Set to true if using HTTPS (production)
       sameSite: "strict",
       maxAge: REFRESH_EXPIRES_SECONDS * 1000,
     })
@@ -93,7 +93,7 @@ export const registerService = async (
 
       res.cookie("refreshToken", refreshToken, {
         httpOnly: true,
-        secure: false, // Set to true if using HTTPS (production)
+        secure: true, // Set to true if using HTTPS (production)
         sameSite: "strict",
         maxAge: REFRESH_EXPIRES_SECONDS * 1000,
       })

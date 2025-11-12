@@ -19,7 +19,18 @@ const connectServer = async () => {
 
   app.use(express.json())
   app.use(cookieParser())
-  app.use(cors({ origin: "http://localhost:8080", credentials: true })) // Change this for production
+  app.use(
+    cors({
+      origin: [
+        "http://localhost:8080",
+        "https://chatlink-frontend.vercel.app/",
+        "https://chatlink-frontend-amankumar-99s-projects.vercel.app/",
+        "https://chatlink-frontend-git-main-amankumar-99s-projects.vercel.app/",
+        "https://chatlink-frontend-8qgsga9pf-amankumar-99s-projects.vercel.app/",
+      ],
+      credentials: true,
+    })
+  )
 
   // Other routes and middleware can be added here
   app.use("/api/auth", authRoute)
