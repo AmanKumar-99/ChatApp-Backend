@@ -5,7 +5,7 @@
   "main": "src/app.ts",
   "type": "module",
   "scripts": {
-    "build": "tsc -p tsconfig.build.json",
+    "build": "tsc -p tsconfig.server.json",
     "lint": "eslint \"src/**/*.{ts,js}\" --max-warnings=0",
     "lint:fix": "eslint \"src/**/*.{ts,js}\" --fix",
     "typecheck": "tsc --noEmit -p tsconfig.server.json",
