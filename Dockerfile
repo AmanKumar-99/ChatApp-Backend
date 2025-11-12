@@ -1,5 +1,5 @@
 # Dockerfile - Node + TypeScript backend (builds TS and runs the compiled JS)
-# Assumes your build produces dist/server.js as entry.
+# Assumes your build produces dist/server.ts as entry.
 
 # Use official Node image
 FROM node:18-alpine AS base
@@ -35,4 +35,4 @@ ENV PORT=10000
 EXPOSE 10000
 
 # Start the server (adjust path if your compiled entry is different)
-CMD ["node", "dist/server.js"]
+CMD ["node", "dist/app.ts"]
