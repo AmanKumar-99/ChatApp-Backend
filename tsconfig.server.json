@@ -5,7 +5,7 @@
     "rootDir": "src",
 
     /* === Module System === */
-    "module": "commonjs",
+    "module": "es2022",
     "moduleResolution": "node", // critical for ESM
     "target": "ES2022",
 
