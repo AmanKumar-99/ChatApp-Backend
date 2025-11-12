@@ -35,4 +35,4 @@ ENV PORT=10000
 EXPOSE 10000
 
 # Start the server (adjust path if your compiled entry is different)
-CMD ["node", "dist/app.ts"]
+CMD ["node", "dist/server.js"]
